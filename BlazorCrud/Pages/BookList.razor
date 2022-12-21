@@ -1,0 +1,76 @@
+﻿
+@page "/"
+@inject IBookService BookService
+<h2>BookList</h2>
+
+<p> This page shows a list of all books.</p>
+
+@Message
+
+<div class="p-1">
+    <a href="/bookDetails"><i class="bi bi-plus-circle mr-1"></i>Add New Book </a>
+</div>
+
+<div class="table-responsive">
+    @if(books == null)
+    {
+        <p><em>Loading</em></p>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover table-striped" >
+            <thead>
+                <tr>
+                    <td>
+                        Title
+                    </td>
+                    <td>
+                        Author
+                    </td>
+                    <td>
+                        Acciones
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in books)
+                {
+                <tr>
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.Author
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-primary mr-2" href="/bookDetails/@item.BookId"><i class="bi bi-pencil-square"></i></a>
+                        <a class="btn btn-sm btn-danger" href="/bookDelete/@item.BookId"><i class="bi bi-trash" ></i></a>
+                    </td>
+
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+
+@code {
+    public IEnumerable<Books> books { get; set; }
+
+    public string Message { get; set; }
+
+    //va a sobre escribir este metodo que ya existe
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            books = await BookService.GetAllBooks();
+        }
+        catch (Exception ex)
+        {
+
+            Message = ex.Message;
+        }
+    }
+}
